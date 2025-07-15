@@ -1,0 +1,166 @@
+agents:
+  context_compression_threshold: 0.95
+  default_prompt_template: templates/default_agent.txt
+  max_context_length: 8000
+  memory_retention_days: 30
+  roles:
+    historian:
+      name: 历史学家
+      prompt_template: templates/historian.txt
+      specialties:
+      - 历史
+      - 文化
+      - 社会
+    mathematician:
+      name: 数学家
+      prompt_template: templates/mathematician.txt
+      specialties:
+      - 数学
+      - 统计
+      - 算法
+    programmer:
+      name: 程序员
+      prompt_template: templates/programmer.txt
+      specialties:
+      - 编程
+      - 算法
+      - 软件开发
+chatroom:
+  auto_save_interval: 300
+  conflict_resolution:
+    enabled: true
+    fallback_strategy: priority_based
+    timeout: 10
+  max_agents_per_room: 10
+  message_history_limit: 1000
+  topology:
+    default: full_mesh
+    options:
+    - full_mesh
+    - star
+    - ring
+    - custom
+context:
+  compression:
+    compression_ratio: 0.3
+    model_name: naver/cocom-v1-128-mistral-7b
+    preserve_keywords: true
+  current_context:
+    include_system_messages: true
+    max_turns: 5
+  memory:
+    episodic:
+      max_entries: 1000
+      similarity_threshold: 0.8
+    procedural:
+      max_entries: 500
+      update_frequency: daily
+    semantic:
+      fact_verification: true
+      max_entries: 2000
+  retrieval:
+    embedding_model: text-embedding-ada-002
+    hnsw_ef_construction: 200
+    hnsw_m: 16
+    similarity_top_k: 5
+  scratchpad:
+    clear_after_session: true
+    max_size: 2000
+features:
+  proactive_chat:
+    confidence_threshold: 0.8
+    enabled: true
+    max_suggestions_per_hour: 3
+    monitoring_interval: 5
+  ui:
+    theme: dark
+flows:
+  multi_agent_discussion:
+    consensus_threshold: 0.7
+    discussion_timeout: 120
+    enabled: true
+    max_participants: 8
+  programming_task:
+    auto_switch_to_workspace: true
+    enabled: true
+    file_export_enabled: true
+    timeout: 300
+  question_response:
+    enabled: true
+    parallel_execution: false
+    retry_count: 3
+    timeout: 60
+frontend:
+  themes:
+    dark:
+      background_color: '#121212'
+      primary_color: '#ff6b35'
+      secondary_color: '#e55a2b'
+      text_color: '#e0e0e0'
+    light:
+      background_color: '#ffffff'
+      primary_color: '#007bff'
+      secondary_color: '#6c757d'
+      text_color: '#212529'
+  ui:
+    animation_duration: 300
+    auto_hide_delay: 3000
+    chat_list_width: 300
+    input_box_width_ratio: 0.65
+models:
+  default_platform: aihubmix
+  platforms:
+    aihubmix:
+      api_base: https://aihubmix.com/v1/chat/completions
+      api_key: sk-4CjsukYDHAsVFKEND15b38FfA5D34e5f99Ac05047b16C8D0
+      default_model: gpt-4o-mini
+      enabled_models:
+      - gpt-4o-mini
+      - gpt-4o-search-preview
+      - gpt-4o-mini-search-preview
+    openai:
+      api_base: https://api.openai.com/v1
+      api_key: ''
+      default_model: gpt-4
+      enabled_models:
+      - gpt-4
+      - gpt-4-turbo
+      - gpt-3.5-turbo
+    zhipu:
+      api_base: https://open.bigmodel.cn/api/paas/v4
+      api_key: ''
+      default_model: glm-4
+      enabled_models:
+      - glm-4
+      - glm-4-plus
+      - glm-3-turbo
+proactive_chat:
+  enabled: true
+  max_suggestions_per_hour: 3
+  monitoring_interval: 5
+  prediction_confidence_threshold: 0.8
+server:
+  cors_origins:
+  - '*'
+  host: localhost
+  max_connections: 100
+  port: 8000
+  upload:
+    allowed_extensions:
+    - .txt
+    - .pdf
+    - .docx
+    - .md
+    - .py
+    - .js
+    - .html
+    - .css
+    max_file_size: 10485760
+    storage_path: uploads/
+  websocket_ping_interval: 30
+system:
+  debug_level: DEBUG
+  default_language: zh-CN
+  log_to_file: true
+  max_concurrent_agents: 10
+  performance_monitoring: true
