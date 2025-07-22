@@ -1,0 +1,59 @@
+/* 主题配置 */
+:root {
+    /* 白天模式 */
+    --primary-color: #2196F3;
+    --secondary-color: #FFF;
+    --text-color: #333;
+    --bg-color: #F5F5F5;
+    --chat-bg: #FFF;
+    --user-bubble: #2196F3;
+    --agent-bubble: #E0E0E0;
+    --border-color: #DDD;
+    --shadow: rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] {
+    /* 黑夜模式 */
+    --primary-color: #FF9800;
+    --secondary-color: #2A2A2A;
+    --text-color: #E0E0E0;
+    --bg-color: #1A1A1A;
+    --chat-bg: #2A2A2A;
+    --user-bubble: #FF9800;
+    --agent-bubble: #3A3A3A;
+    --border-color: #444;
+    --shadow: rgba(255,255,255,0.1);
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* 滚动条主题 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
