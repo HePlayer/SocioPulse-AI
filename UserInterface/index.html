@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocioPulse AI</title>
+    
+    <!-- CSS文件 -->
+    <link rel="stylesheet" href="assets/css/themes.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部栏 -->
+        <div class="top-bar">
+            <div class="logo">SocioPulse AI</div>
+            <div class="top-controls">
+                <button class="icon-btn" id="settingsBtn" title="设置">⚙️</button>
+                <button class="theme-toggle" title="切换主题">🌙</button>
+            </div>
+        </div>
+
+        <!-- 聊天列表 -->
+        <div class="chat-list" id="chatList">
+            <div class="chat-list-header">
+                <input type="text" class="search-input" placeholder="搜索聊天...">
+                <button class="add-chat-btn" title="新建聊天">+</button>
+            </div>
+            <div class="chat-items" id="chatItems">
+                <!-- 聊天项目将动态添加 -->
+            </div>
+        </div>
+
+        <!-- 聊天区域 -->
+        <div class="chat-area" id="chatArea">
+            <!-- 聊天头部 -->
+            <div class="chat-header" id="chatHeader" style="display: none;">
+                <div class="chat-header-info">
+                    <div class="chat-avatar">A</div>
+                    <div>
+                        <div class="chat-name" id="chatHeaderName">示例聊天</div>
+                        <div class="chat-preview" id="chatHeaderStatus">在线</div>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="icon-btn" id="agentInfoBtn" title="Agent信息">👤</button>
+                    <button class="icon-btn" id="moreOptionsBtn" title="更多选项">⋮</button>
+                </div>
+            </div>
+            
+            <!-- 消息容器 -->
+            <div class="messages-container" id="messagesContainer" style="display: none;">
+                <!-- 消息将动态添加到这里 -->
+            </div>
+            
+            <!-- 输入区域 -->
+            <div class="input-container" id="inputContainer" style="display: none;">
+                <div class="input-wrapper">
+                    <textarea class="message-input" id="messageInput" placeholder="输入消息..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn" title="发送">📤</button>
+                </div>
+            </div>
+            
+            <!-- 默认空状态 - 统一精美欢迎界面 -->
+            <div class="empty-state" id="emptyState">
+                <div class="initial-welcome-container">
+                    <div class="welcome-content">
+                        <div class="welcome-icon">💬</div>
+                        <h2>欢迎使用 SocioPulse AI</h2>
+                        <p>您还没有创建任何聊天室</p>
+                        <p>点击左侧的"+"按钮开始您的第一次对话</p>
+                        <button class="welcome-create-btn" onclick="window.chatManager?.showCreateRoomModal()">
+                            <span class="btn-icon">➕</span>
+                            创建第一个聊天室
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工作区 -->
+        <div class="workspace" id="workspace">
+            <div class="workspace-header">
+                <h2>工作区</h2>
+                <button class="icon-btn" id="backToChat">返回聊天</button>
+            </div>
+            <div class="workspace-content" id="workspaceContent">
+                <!-- 工作区内容 -->
+            </div>
+        </div>
+
+        <!-- Agent信息模态框 -->
+        <div class="modal-overlay" id="agentInfoModal" style="display: none;">
+            <div class="agent-info-modal">
+                <div class="modal-header">
+                    <h3>Agent信息管理</h3>
+                    <button class="close-btn" id="closeAgentInfoModal">×</button>
+                </div>
+                <div class="modal-body" id="agentInfoContent">
+                    <!-- Agent信息内容将动态加载 -->
+                    <div class="loading-placeholder">
+                        <div class="loading-spinner"></div>
+                        <p>加载Agent信息中...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="action-btn" id="addNewAgentBtn">添加Agent</button>
+                    <button class="cancel-btn" id="closeAgentInfoBtn">关闭</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 更多选项下拉菜单 -->
+        <div class="dropdown-overlay" id="moreOptionsDropdown" style="display: none;">
+            <div class="dropdown-menu" id="moreOptionsMenu">
+                <!-- 更多选项菜单项将动态生成 -->
+            </div>
+        </div>
+
+        <!-- 设置模态框 -->
+        <div class="modal-overlay" id="settingsModal" style="display: none;">
+            <div class="settings-modal">
+                <div class="modal-header">
+                    <h3>系统设置</h3>
+                    <button class="close-btn" id="closeSettingsModal">×</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="settings-tabs">
+                        <button class="tab-btn active" data-tab="models">模型配置</button>
+                        <button class="tab-btn" data-tab="features">功能设置</button>
+                        <button class="tab-btn" data-tab="data">数据管理</button>
+                    </div>
+                    
+                    <!-- 模型配置标签页 -->
+                    <div class="tab-content active" id="modelsTab">
+                        <div class="setting-section">
+                            <h4>默认平台</h4>
+                            <select id="defaultPlatformSelect">
+                                <option value="zhipu" selected>智谱AI</option>
+                                <option value="aihubmix">AiHubMix</option>
+                                <option value="openai">OpenAI</option>
+                            </select>
+                        </div>
+                        
+                        <div class="platform-configs">
+                            <!-- OpenAI配置 -->
+                            <div class="platform-config" data-platform="openai">
+                                <h4>OpenAI 配置</h4>
+                                <div class="config-row">
+                                    <label>API Key:</label>
+                                    <input type="password" id="openaiApiKey" placeholder="sk-...">
+                                    <button class="test-btn" data-platform="openai">测试</button>
+                                </div>
+                                <div class="config-row">
+                                    <label>API Base:</label>
+                                    <input type="text" id="openaiApiBase" value="https://api.openai.com/v1">
+                                </div>
+                                <div class="config-row">
+                                    <label>可用模型:</label>
+                                    <div class="model-checkboxes" id="openaiModels">
+                                        <label><input type="checkbox" value="gpt-4" checked> GPT-4</label>
+                                        <label><input type="checkbox" value="gpt-4-turbo"> GPT-4 Turbo</label>
+                                        <label><input type="checkbox" value="gpt-3.5-turbo"> GPT-3.5 Turbo</label>
+                                    </div>
+                                </div>
+                                <div class="config-row">
+                                    <label>默认模型:</label>
+                                    <select id="openaiDefaultModel">
+                                        <option value="gpt-4">GPT-4</option>
+                                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- AiHubMix配置 -->
+                            <div class="platform-config" data-platform="aihubmix">
+                                <h4>AiHubMix 配置</h4>
+                                <div class="config-row">
+                                    <label>API Key:</label>
+                                    <input type="password" id="aihubmixApiKey" placeholder="输入API Key">
+                                    <button class="test-btn" data-platform="aihubmix">测试</button>
+                                </div>
+                                <div class="config-row">
+                                    <label>API Base:</label>
+                                    <input type="text" id="aihubmixApiBase" value="https://aihubmix.com/v1">
+                                </div>
+                                <div class="config-row">
+                                    <label>可用模型:</label>
+                                    <div class="model-checkboxes" id="aihubmixModels">
+                                        <label><input type="checkbox" value="gpt-4o-mini" checked> GPT-4o Mini</label>
+                                        <label><input type="checkbox" value="gpt-4o-search-preview"> GPT-4o Search Preview</label>
+                                        <label><input type="checkbox" value="gpt-4o-mini-search-preview"> GPT-4o Mini Search Preview</label>
+                                    </div>
+                                </div>
+                                <div class="config-row">
+                                    <label>默认模型:</label>
+                                    <select id="aihubmixDefaultModel">
+                                        <option value="gpt-4o-mini">GPT-4o Mini</option>
+                                        <option value="gpt-4o-search-preview">GPT-4o Search Preview</option>
+                                        <option value="gpt-4o-mini-search-preview">GPT-4o Mini Search Preview</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- 智谱AI配置 -->
+                            <div class="platform-config" data-platform="zhipu">
+                                <h4>智谱AI 配置</h4>
+                                <div class="config-row">
+                                    <label>API Key:</label>
+                                    <input type="password" id="zhipuApiKey" placeholder="输入API Key">
+                                    <button class="test-btn" data-platform="zhipu">测试</button>
+                                </div>
+                                <div class="config-row">
+                                    <label>API Base:</label>
+                                    <input type="text" id="zhipuApiBase" value="https://open.bigmodel.cn/api/paas/v4">
+                                </div>
+                                <div class="config-row">
+                                    <label>可用模型:</label>
+                                    <div class="model-checkboxes" id="zhipuModels">
+                                        <label><input type="checkbox" value="glm-4" checked> GLM-4</label>
+                                        <label><input type="checkbox" value="glm-4-plus"> GLM-4 Plus</label>
+                                        <label><input type="checkbox" value="glm-3-turbo"> GLM-3 Turbo</label>
+                                        <label><input type="checkbox" value="glm-4-flash-250414" checked> GLM-4 Flash (免费)</label>
+                                    </div>
+                                </div>
+                                <div class="config-row">
+                                    <label>默认模型:</label>
+                                    <select id="zhipuDefaultModel">
+                                        <option value="glm-4">GLM-4</option>
+                                        <option value="glm-4-plus">GLM-4 Plus</option>
+                                        <option value="glm-3-turbo">GLM-3 Turbo</option>
+                                        <option value="glm-4-flash-250414" selected>GLM-4 Flash (免费)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 功能设置标签页 -->
+                    <div class="tab-content" id="featuresTab">
+                        <div class="setting-section">
+                            <h4>Agent主动聊天</h4>
+                            <div class="config-row">
+                                <label>启用主动聊天:</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="proactiveChatEnabled">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="config-row">
+                                <label>监听间隔 (秒):</label>
+                                <input type="range" id="monitoringInterval" min="1" max="60" value="5">
+                                <span id="intervalValue">5</span>
+                            </div>
+                            <div class="config-row">
+                                <label>置信度阈值:</label>
+                                <input type="range" id="confidenceThreshold" min="0.1" max="1.0" step="0.1" value="0.8">
+                                <span id="confidenceValue">0.8</span>
+                            </div>
+                            <div class="config-row">
+                                <label>每小时最大建议:</label>
+                                <input type="number" id="maxSuggestionsPerHour" min="1" max="20" value="3">
+                            </div>
+                        </div>
+                        
+                        <div class="setting-section">
+                            <h4>界面设置</h4>
+                            <div class="config-row">
+                                <label>默认主题:</label>
+                                <select id="defaultTheme">
+                                    <option value="light">浅色主题</option>
+                                    <option value="dark">深色主题</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据管理标签页 -->
+                    <div class="tab-content" id="dataTab">
+                        <div class="setting-section">
+                            <h4>配置管理</h4>
+                            <div class="config-row">
+                                <button class="action-btn" id="exportConfigBtn">导出配置</button>
+                                <button class="action-btn" id="importConfigBtn">导入配置</button>
+                                <input type="file" id="importConfigFile" accept=".json" style="display: none;">
+                            </div>
+                            <div class="config-row">
+                                <button class="action-btn danger" id="resetSettingsBtn">重置所有设置</button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-section">
+                            <h4>存储信息</h4>
+                            <div class="storage-info">
+                                <p>配置存储: <span id="storageSize">计算中...</span></p>
+                                <p>最后更新: <span id="lastUpdate">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="cancel-btn" id="cancelSettingsBtn">取消</button>
+                    <button class="create-btn" id="saveSettingsBtn">保存设置</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent配置模态框 -->
+        <div class="modal-overlay" id="agentConfigModal" style="display: none;">
+            <div class="agent-config-modal">
+                <div class="modal-header">
+                    <h3>创建新聊天</h3>
+                    <button class="close-btn" id="closeModal">×</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="room-name-input">
+                        <label>聊天室名称：</label>
+                        <input type="text" id="roomNameInput" placeholder="输入聊天室名称...">
+                    </div>
+                    
+                    <div class="chat-type-selector">
+                        <label>聊天类型：</label>
+                        <select id="chatTypeSelect">
+                            <option value="single">单个Agent对话</option>
+                            <option value="group">多Agent群聊</option>
+                        </select>
+                    </div>
+                    
+                    <div class="agents-config" id="agentsConfig">
+                        <!-- Agent配置项将动态添加 -->
+                    </div>
+                    
+                    <button class="add-agent-btn" id="addAgentBtn">+ 添加Agent</button>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="cancel-btn" id="cancelBtn">取消</button>
+                    <button class="create-btn" id="createRoomBtn">创建聊天</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 存储系统模块 -->
+    <script src="assets/js/storage/event-bus.js"></script>
+    <script src="assets/js/storage/data-models.js"></script>
+    <script src="assets/js/storage/memory-cache.js"></script>
+    <script src="assets/js/storage/localstorage-manager.js"></script>
+    <script src="assets/js/storage/indexeddb-manager.js"></script>
+    <script src="assets/js/storage/storage-manager.js"></script>
+    
+    <!-- JavaScript文件 -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/modal_manager.js"></script>
+    <script src="assets/js/websocket.js"></script>
+    <script src="assets/js/settings.js"></script>
+    <script src="assets/js/layout-manager.js"></script>
+    <script src="assets/js/chat-room-actions.js"></script>
+    <script src="assets/js/chat-manager.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
